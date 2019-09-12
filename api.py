@@ -23,59 +23,6 @@ import random
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
-@app.route('/')
-@app.route('/index')
-def index():
-    return render_template('index.html')
-
-
-@app.route('/img')
-def img():
-    return render_template('img.html')
-
-
-@app.route('/imgview', methods=['POST','GET'])
-def imgview():
-    msg = ''
-    f = None
-    if request.method == 'POST':
-        f = request.files['imgfileupload']
-        input_file_path = os.path.join("static/data/", secure_filename(f.filename))
-        f.save(input_file_path)
-        try:
-            out_file_path = instance_segmentation_api(input_file_path, threshold=0.8)
-            msg = 'File ' + str(f.filename) + ' Uploaded and Processed Successfully !'
-        except Exception as e:
-            msg = ' Try other Image, ML processing failed : ' + str(e)
-            out_file_path=''
-    else:
-        msg = 'Upload Failed or Request Failed !'
-
-    return render_template('img.html', msg=msg, ifile=input_file_path, ofile=out_file_path)
-
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-
-def random_colour_masks(image):
-    """
-    random_colour_masks
-      parameters:
-        - image - predicted masks
-      method:
-        - the masks of each predicted object is given random colour for visualization
-    """
-    colours = [[0, 255, 0], [0, 0, 255], [255, 0, 0], [0, 255, 255], [255, 255, 0], [255, 0, 255], [80, 70, 180],
-               [250, 80, 190], [245, 145, 50], [70, 150, 250], [50, 190, 190]]
-    r = np.zeros_like(image).astype(np.uint8)
-    g = np.zeros_like(image).astype(np.uint8)
-    b = np.zeros_like(image).astype(np.uint8)
-    r[image == 1], g[image == 1], b[image == 1] = colours[random.randrange(0, 10)]
-    coloured_mask = np.stack([r, g, b], axis=2)
-    return coloured_mask
-
 
 COCO_INSTANCE_CATEGORY_NAMES = [
     '__background__', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus',
@@ -89,11 +36,76 @@ COCO_INSTANCE_CATEGORY_NAMES = [
     'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'N/A', 'dining table',
     'N/A', 'N/A', 'toilet', 'N/A', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone',
     'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'N/A', 'book',
-    'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush'
+    'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush',
 ]
+label_list = [i for i in COCO_INSTANCE_CATEGORY_NAMES[1:] if i != 'N/A' ]
+
+@app.route('/')
+@app.route('/index')
+def index():
+    return render_template('index.html')
 
 
-def get_prediction(img_path, threshold):
+@app.route('/img')
+def img():
+    return render_template('img.html',
+                           label=None,
+                           labels=label_list,
+                           msg=None,
+                           ifile=None,
+                           ofile=None
+                           )
+
+
+@app.route('/imgview', methods=['POST','GET'])
+def imgview():
+    msg = ''
+    f = None
+    if request.method == 'POST':
+        f = request.files['imgfileupload']
+        label = request.form.get('label_name')
+        input_file_path = os.path.join("static/data/", secure_filename(f.filename))
+        f.save(input_file_path)
+        try:
+            out_file_path = instance_segmentation_api(label=label, img_path=input_file_path)
+            msg = 'File ' + str(f.filename) + ' Uploaded and Processed Successfully !'
+        except Exception as e:
+            msg = ' Try other Image, ML processing failed : ' + str(e)
+            out_file_path=''
+    else:
+        msg = 'Upload Failed or Request Failed !'
+
+    return render_template('img.html',
+                           label=label,
+                           msg=msg,
+                           labels=label_list,
+                           ifile=input_file_path,
+                           ofile=out_file_path)
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+
+def random_colour_masks(image):
+    """
+    random_colour_masks
+    parameters:
+      - image - predicted masks
+    method:
+      - the masks of each predicted object is given random colour for visualization
+    """
+    colours = [[0, 255, 0],[0, 0, 255],[255, 0, 0],[0, 255, 255],[255, 255, 0],[255, 0, 255],[80, 70, 180],[250, 80, 190],[245, 145, 50],[70, 150, 250],[50, 190, 190]]
+    r = np.zeros_like(image).astype(np.uint8)
+    g = np.zeros_like(image).astype(np.uint8)
+    b = np.zeros_like(image).astype(np.uint8)
+    r[image == 1], g[image == 1], b[image == 1] = colours[random.randrange(0,10)]
+    coloured_mask = np.stack([r, g, b], axis=2)
+    return coloured_mask
+
+
+def get_prediction(img_path, threshold, label):
     """
     get_prediction
       parameters:
@@ -114,13 +126,19 @@ def get_prediction(img_path, threshold):
     pred_t = [pred_score.index(x) for x in pred_score if x > threshold][-1]
     masks = (pred[0]['masks'] > 0.5).squeeze().detach().cpu().numpy()
     pred_class = [COCO_INSTANCE_CATEGORY_NAMES[i] for i in list(pred[0]['labels'].numpy())]
+    # print(pred[0]['person'])
     pred_boxes = [[(i[0], i[1]), (i[2], i[3])] for i in list(pred[0]['boxes'].detach().numpy())]
     masks = masks[:pred_t + 1]
     pred_boxes = pred_boxes[:pred_t + 1]
     pred_class = pred_class[:pred_t + 1]
+    indexes = [i for i in range(len(pred_class)) if pred_class[i] == label]
+    masks = [masks[i] for i in indexes]
+    pred_boxes = [pred_boxes[i] for i in indexes]
+    pred_class = [i for i in pred_class if i == label]
+    #  print(masks, pred_boxes, pred_class)
     return masks, pred_boxes, pred_class
 
-
+'''
 def instance_segmentation_api(img_path, threshold=0.5, rect_th=2, text_size=1, text_th=2):
     """
     instance_segmentation_api
@@ -135,16 +153,49 @@ def instance_segmentation_api(img_path, threshold=0.5, rect_th=2, text_size=1, t
     masks, boxes, pred_cls = get_prediction(img_path, threshold)
     img = cv2.imread(img_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
     for i in range(len(masks)):
         rgb_mask = random_colour_masks(masks[i])
         img = cv2.addWeighted(img, 1, rgb_mask, 1, 0)
         # cv2.rectangle(img, boxes[i][0], boxes[i][1],color=(0, 255, 0), thickness=rect_th)
         cv2.putText(img, pred_cls[i], boxes[i][0], cv2.FONT_ITALIC, text_size, (255, 0, 0), thickness=text_th)
+
     plt.figure(figsize=(20, 30))
     plt.imshow(img)
     plt.xticks([])
     plt.yticks([])
     plt.savefig(output_img, bbox_inches='tight', pad_inches=0, transparent = True)
+    #plt.show()
+    return output_img
+'''
+
+def instance_segmentation_api(label, img_path, threshold=0.85, rect_th=2, text_size=1, text_th=2):
+    """
+    instance_segmentation_api
+    parameters:
+      - img_path - path to input image
+    method:
+      - prediction is obtained by get_prediction
+      - each mask is given random color
+      - final output is displayed
+    """
+    output_img = str(img_path.split('.')[0])+"_"+label+"_out.jpg"
+
+    masks, boxes, pred_cls = get_prediction(img_path, threshold, label)
+    img = cv2.imread(img_path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    for i in range(len(masks)):
+        rgb_mask = random_colour_masks(masks[i])
+        img = cv2.addWeighted(img, 1, rgb_mask, 1, 0)
+        #cv2.rectangle(img, boxes[i][0], boxes[i][1],color=(0, 255, 0), thickness=rect_th)
+        #cv2.putText(img,pred_cls[i], boxes[i][0], cv2.FONT_ITALIC, text_size, (255,0,0),thickness=text_th)
+
+    plt.figure(figsize=(20,30))
+    plt.imshow(img)
+    plt.xticks([])
+    plt.yticks([])
+    plt.savefig(output_img, bbox_inches='tight', pad_inches=0, transparent=True)
     #plt.show()
     return output_img
 

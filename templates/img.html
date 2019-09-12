@@ -52,6 +52,15 @@
 						<br>
 						<br>
 						<div id="image-holder" ></div>
+
+						{% if labels %}
+							<select id="mySelect" name="label_name">
+							{% for l in labels %}
+								<option value="{{ l }}">{{ l }}</option>
+							{% endfor %}
+							</select>
+						{% endif %}
+
 						<input type="submit" value="Upload">
 					</form>
 				</div>
@@ -70,7 +79,7 @@
 
 						  $("#outimgholder").empty();
 						  $("#msgdiv").empty();
-
+						  $("#labeldiv").empty();
 						  if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg" || extn == "bmp")
 						  {
 							if (typeof(FileReader) != "undefined")
@@ -102,6 +111,11 @@
 				<div id="msgdiv" style="color:red;">
 					{% if msg %}
 						<h5>{{ msg }}</h5>
+					{% endif %}
+				</div>
+				<div id="labeldiv">
+					{% if label %}
+					<h3>Object Masked : {{ label }}</h3>
 					{% endif %}
 				</div>
 				<div id="outimgholder">
