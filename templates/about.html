@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% import 'head.html' as hdr %}
+	{{ hdr }}
+	<style type="text/css">
+		.thumb-image
+		{
+			 -float:left;
+			 width:420px;
+			 height:300px;
+			 position:relative;
+			 padding:2px;
+			 border: 1px solid #014852;
+			 border-radius:10px;
+			 margin-bottom:6px;
+		}
+
+		.image
+		{
+			 width:650px;
+			 height:430px;
+			 position:relative;
+			 padding:2px;
+			 border: 1px solid #014852;
+			 border-radius : 10px;
+			 margin-bottom:6px;
+		}
+
+	</style>
+</head>
+
+<body>
+<div class="body">
+	<fieldset>
+		{% import 'header.html' as hd%}
+		{{ hd }}
+
+		<section>
+			{% import 'nav.html' as nv %}
+			{{ nv }}
+
+			<article>
+                <h4>About Us</h4>
+			</article>
+
+		</section>
+
+		{% import 'footer.html' as ft %}
+		{{ ft }}
+
+</fieldset>
+</div>
+</body>
+</html>

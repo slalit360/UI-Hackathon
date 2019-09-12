@@ -1,0 +1,155 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.body{
+	border-radius:10px;
+	
+}
+
+fieldset{
+	border-radius:12px;
+	border:2px solid;
+}
+/* Style the header */
+header {
+  padding: 10px;
+  text-align: center;
+  font-size: 25px;
+  display:inline;
+}
+
+.logo{
+  padding: 5px;
+  margin: 5px;
+  text-align:center;
+}
+
+.logo_img{
+	width:150px;
+	height:150px;
+	padding:5px;
+    border:1px solid;
+    border-radius:40px;
+	color:black;
+	background-color:white;
+}
+
+legend{
+	text-align:center;
+	color:blue;
+}
+
+/* Container for flexboxes */
+section {
+  border-radius:12px;
+  -display: -webkit-flex;
+  display: flex;
+  -display:block-inline;
+  -background-color:yellow;
+}
+
+
+
+/* Style the navigation menu */
+nav {
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  padding: 40px;
+}
+
+
+nav li  a{
+	color:blue;
+	font-size:20px;
+}
+
+nav li  a:hover {
+	color:#330000;
+	font-size:21px;
+	background-color:#ff9999;
+}
+
+
+/* Style the list inside the menu */
+nav ul {
+  text-align:left;
+  list-style-type: none;
+  padding: 15px;
+  background-color:white;
+  border-radius:12px;
+  width:120px;
+  border:1px solid grey;
+}
+
+
+/* Style the content */
+article {
+	
+  -webkit-flex: 3;
+  -ms-flex: 3;
+  -flex: 3;
+  -background-color: #f1f1f1;
+  padding: 10px;
+  -border-radius:12px;
+}
+
+/* Style the footer */
+footer {
+	border-radius:12px;
+  -background-color: #ffa7a6;
+  padding: 10px;
+  text-align: center;
+  -color: white;
+}
+
+/* Responsive layout - makes the menu and the content (inside the section) sit on top of each other instead of next to each other */
+@media (max-width: 600px) {
+  section {
+    -webkit-flex-direction: column;
+    flex-direction: column;
+  }
+}
+
+input[type=button], input[type=submit], select {
+  border: 1px solid gray;
+  color: black;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+input[type=file]{
+border: 1px solid gray;
+  color: black;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+
+}
+
+/*
+table{
+	background-color:yellow;
+	border:2px solid black;
+}*/
+#row{
+    padding:5px;
+    margin:5px;
+    border:1px solid grey;
+    color:black;
+}
+
+
+
+

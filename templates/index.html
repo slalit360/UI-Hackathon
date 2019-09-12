@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% import 'head.html' as hdr %}
+	{{ hdr }}
+</head>
+
+<body>
+	<div class="body">
+		<fieldset>
+			{% import 'header.html' as hd %}
+			{{ hd }}
+
+			<section>
+				{% import 'nav.html' as nv %}
+				{{ nv }}
+				<article>
+				<br>&nbsp;
+				<h3> Welcome to Deep Semantics</h3>
+				</article>
+			</section>
+
+			{% import 'footer.html' as ft %}
+			{{ ft }}
+		</fieldset>
+	</div>
+</body>
+
+</html>

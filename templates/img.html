@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% import 'head.html' as hdr %}
+	{{ hdr }}
+	<style type="text/css">
+		.thumb-image
+		{
+			 -float:left;
+			 width:420px;
+			 height:300px;
+			 position:relative;
+			 padding:2px;
+			 border: 1px solid #014852;
+			 border-radius:10px;
+			 margin-bottom:6px;
+		}
+
+		.image
+		{
+			 width:650px;
+			 height:430px;
+			 position:relative;
+			 padding:2px;
+			 border: 1px solid #014852;
+			 border-radius : 10px;
+			 margin-bottom:6px;
+		}
+
+	</style>
+
+</head>
+
+<body>
+<div class="body">
+	<fieldset>
+		{% import 'header.html' as hd%}
+		{{ hd }}
+
+		<section>
+			{% import 'nav.html' as nv %}
+			{{ nv }}
+
+			<article>
+				<h3>Upload Image or Drag & Drop</h3>
+
+				<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+				<div id="wrapper" style="margin-top: 20px;">
+					<form action="http://localhost:5000/imgview" method="POST" enctype="multipart/form-data">
+						<input id="fileUpload" name="imgfileupload" type="file" required/>
+						<br>
+						<br>
+						<div id="image-holder" ></div>
+						<input type="submit" value="Upload">
+					</form>
+				</div>
+
+				<script>
+				$(document).ready(function()
+				{
+						$("#fileUpload").on('change', function()
+						{
+						  //Get count of selected files
+						  var countFiles = $(this)[0].files.length;
+						  var imgPath = $(this)[0].value;
+						  var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+						  var image_holder = $("#image-holder");
+						  image_holder.empty();
+
+						  $("#outimgholder").empty();
+						  $("#msgdiv").empty();
+
+						  if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg" || extn == "bmp")
+						  {
+							if (typeof(FileReader) != "undefined")
+							{
+							  //loop for each file selected for uploaded.
+							  for (var i = 0; i < countFiles; i++)
+							  {
+								var reader = new FileReader();
+								reader.onload = function(e)
+								{
+								  $("<img />", {
+									"src": e.target.result,
+									"class": "thumb-image"
+								  }).appendTo(image_holder);
+								}
+								image_holder.show();
+								reader.readAsDataURL($(this)[0].files[i]);
+							  }
+							} else {
+							  alert("This browser does not support FileReader.");
+							}
+						  } else {
+							alert("Please select only images file (gif, jpg, jpeg, bmp, png)!");
+						  }
+						});
+					  });
+				</script>
+
+				<div id="msgdiv" style="color:red;">
+					{% if msg %}
+						<h5>{{ msg }}</h5>
+					{% endif %}
+				</div>
+				<div id="outimgholder">
+					{% if ifile%}
+						<h5>Hover over image to view output</h5>
+						<img class="image" src="{{ ifile }}"
+							 onmouseover="this.src='{{ ofile }}'"
+							 onmouseout="this.src='{{ ifile }}'" />
+					{% endif %}
+				</div>
+			</article>
+		</section>
+
+		{% import 'footer.html' as ft %}
+		{{ ft }}
+
+</fieldset>
+</div>
+</body>
+</html>
