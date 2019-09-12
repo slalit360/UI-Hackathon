@@ -65,7 +65,12 @@ def imgview():
         f = request.files['imgfileupload']
         label = request.form.get('label_name')
         input_file_path = os.path.join("static/data/", secure_filename(f.filename))
+
+        if os.path.exists(input_file_path):
+            os.remove(input_file_path)
+
         f.save(input_file_path)
+
         try:
             out_file_path = instance_segmentation_api(label=label, img_path=input_file_path)
             msg = 'File ' + str(f.filename) + ' Uploaded and Processed Successfully !'
@@ -181,6 +186,9 @@ def instance_segmentation_api(label, img_path, threshold=0.85, rect_th=2, text_s
     """
     output_img = str(img_path.split('.')[0])+"_"+label+"_out.jpg"
 
+    if os.path.exists(output_img):
+        os.remove(output_img)
+
     masks, boxes, pred_cls = get_prediction(img_path, threshold, label)
     img = cv2.imread(img_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -195,7 +203,7 @@ def instance_segmentation_api(label, img_path, threshold=0.85, rect_th=2, text_s
     plt.imshow(img)
     plt.xticks([])
     plt.yticks([])
-    plt.savefig(output_img, bbox_inches='tight', pad_inches=0, transparent=True)
+    plt.savefig(output_img, bbox_inches='tight', pad_inches=0, transparent=False)
     #plt.show()
     return output_img
 
