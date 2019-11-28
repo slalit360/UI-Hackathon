@@ -26,8 +26,67 @@
 			 border-radius : 10px;
 			 margin-bottom:6px;
 		}
-
+		#myBar{
+			  display:none;
+			  border: 1px solid #014852;
+			  border-radius : 5px;
+			  font-style:bold;
+			  width: 13%;
+			  height: 30px;
+			  background-color: #4CAF50;
+			  text-align: center; /* To center it horizontally (if you want) */
+			  line-height: 30px; /* To center it vertically */
+			  color: white;
+		}
 	</style>
+
+    <!--script type="text/javascript">
+    var c=1;
+        function display_c()
+        {   c = c+1;
+            var refresh=200; // Refresh rate in milli seconds
+            if(c < 100)
+            {
+            	mytime=setTimeout('display_ct()',refresh);
+        	}
+        }
+
+        function display_ct()
+        {   //var x = new Date()
+        	document.getElementById('ct').style.display = "inline";
+        	document.getElementById('ct').style.width = c * 100;
+            document.getElementById('ct').innerHTML = c + ' % Processed';
+            display_c();
+         }
+    </script-->
+	<script type="text/javascript">
+		function move()
+		{
+				if(document.getElementById('fileUpload').value == '')
+            	{
+                	alert('Please upload the image file');
+                	return false;
+            	}
+                  var elem = document.getElementById("myBar");
+                  elem.style.display = "block";
+                  var width = 13;
+                  var id = setInterval(frame, 700);
+                  function frame()
+                  {
+                     if (width >= 100)
+                     {
+                         clearInterval(id);
+                     }
+                     else
+                     {
+                        width++;
+                        elem.style.width = width*1 +'%';
+                        elem.innerHTML = 'Processing';//width * 1 + '%';
+                     }
+                  }
+
+    	}
+	</script>
 
 </head>
 
@@ -61,13 +120,12 @@
 							</select>
 						{% endif %}
 
-						<input type="submit" value="Upload">
+						<input type="submit" value="Upload" onclick="move()" >
 					</form>
 				</div>
-
 				<script>
 				$(document).ready(function()
-				{
+						{
 						$("#fileUpload").on('change', function()
 						{
 						  //Get count of selected files
@@ -80,7 +138,7 @@
 						  $("#outimgholder").empty();
 						  $("#msgdiv").empty();
 						  $("#labeldiv").empty();
-						  if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg" || extn == "bmp")
+						  if ( extn == "png" || extn == "jpg" || extn == "jpeg" || extn == "bmp")
 						  {
 							if (typeof(FileReader) != "undefined")
 							{
@@ -102,11 +160,19 @@
 							  alert("This browser does not support FileReader.");
 							}
 						  } else {
-							alert("Please select only images file (gif, jpg, jpeg, bmp, png)!");
+							alert("Please select only images file (jpg, jpeg, bmp, png)!");
 						  }
 						});
+
+
 					  });
 				</script>
+				<br>
+				<br>
+                <!--div id="ct" style="display:none; padding :10px; border :1px solid; border-radius:5px; font-size:20px; color:blue;"></div-->
+				<div id="myProgress">
+  					<div id="myBar"></div>
+				</div>
 
 				<div id="msgdiv" style="color:red;">
 					{% if msg %}

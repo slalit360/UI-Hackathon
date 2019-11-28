@@ -1,0 +1,24 @@
+{
+    "coordinates": "[[(219.88263, 248.08426), (405.85162, 608.2523)], 
+					 [(536.49164, 247.60458), (713.36260, 597.3496)]]",
+    
+	"labels": ["person", "person"],
+	
+    "masks": "[array([[False, False, False, ..., False, False, False],\n
+					  [False, False, False, ..., False, False, False],\n       
+					  [False, False, False, ..., False, False, False],\n       
+					                        ...						 ,\n       
+					  [False, False, False, ..., False, False, False],\n       
+					  [False, False, False, ..., False, False, False],\n       
+					  [False, False, False, ..., False, False, False]]
+					 ), 
+			   array([[False, False, False, ..., False, False, False],\n       
+			          [False, False, False, ..., False, False, False],\n       
+					  [False, False, False, ..., False, False, False],\n       
+					  ...,\n       
+					  [False, False, False, ..., False, False, False],\n       
+					  [False, False, False, ..., False, False, False],\n       
+					  [False, False, False, ..., False, False, False]]
+					 )
+				]"
+}

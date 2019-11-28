@@ -1,24 +1,21 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Aug 28 16:10:25 2019
-
 @author: lalit.h.suthar
 """
 
-from flask import Flask, render_template, redirect, url_for, request, jsonify, make_response
+from flask import Flask, render_template, redirect, url_for, request, jsonify, make_response, Response
 from werkzeug import secure_filename
-import os
-#from .semanticCNN import *
-
 from PIL import Image
 import matplotlib.pyplot as plt
-import torch
 import torchvision.transforms as T
 import torchvision
 import torch
 import numpy as np
 import cv2
 import random
+import os
+import json
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
@@ -61,9 +58,15 @@ def img():
 def imgview():
     msg = ''
     f = None
+    label=''
+    input_file_path=''
+    out_file_path=''
+
     if request.method == 'POST':
         f = request.files['imgfileupload']
         label = request.form.get('label_name')
+        #print(label)
+        #print(secure_filename(f.filename))
         input_file_path = os.path.join("static/data/", secure_filename(f.filename))
 
         if os.path.exists(input_file_path):
@@ -74,23 +77,30 @@ def imgview():
         try:
             out_file_path = instance_segmentation_api(label=label, img_path=input_file_path)
             msg = 'File ' + str(f.filename) + ' Uploaded and Processed Successfully !'
+            return render_template('img.html',
+                                   label=label,
+                                   msg=msg,
+                                   labels=label_list,
+                                   ifile=input_file_path,
+                                   ofile=out_file_path)
         except Exception as e:
             msg = ' Try other Image, ML processing failed : ' + str(e)
             out_file_path=''
+            render_template('img.html', msg=msg, labels=label_list, out_file_path=out_file_path)
     else:
         msg = 'Upload Failed or Request Failed !'
-
-    return render_template('img.html',
-                           label=label,
-                           msg=msg,
-                           labels=label_list,
-                           ifile=input_file_path,
-                           ofile=out_file_path)
+        return render_template('img.html', msg=msg, labels=label_list)
 
 
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+
+@app.route('/data', methods=['POST','GET'])
+def data():
+    os.walk()
+    return render_template()
 
 
 def random_colour_masks(image):
@@ -140,39 +150,18 @@ def get_prediction(img_path, threshold, label):
     masks = [masks[i] for i in indexes]
     pred_boxes = [pred_boxes[i] for i in indexes]
     pred_class = [i for i in pred_class if i == label]
-    #  print(masks, pred_boxes, pred_class)
+
+    data = {}
+    data['masks'] = str(masks) # np.array(masks).tolist() #
+    data['coordinates'] = str(pred_boxes)
+    data['labels'] = pred_class
+
+    json_str = json.dumps(data, indent=4, sort_keys=True)
+    with open(str(img_path.split('.')[0])+"_"+label+"_out.json", 'w') as outfile:
+        outfile.write(json_str)
+
     return masks, pred_boxes, pred_class
 
-'''
-def instance_segmentation_api(img_path, threshold=0.5, rect_th=2, text_size=1, text_th=2):
-    """
-    instance_segmentation_api
-      parameters:
-        - img_path - path to input image
-      method:
-        - prediction is obtained by get_prediction
-        - each mask is given random color
-        - final output is displayed / saved
-    """
-    output_img = str(img_path.split('.')[0]) + "_out.jpg"
-    masks, boxes, pred_cls = get_prediction(img_path, threshold)
-    img = cv2.imread(img_path)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-    for i in range(len(masks)):
-        rgb_mask = random_colour_masks(masks[i])
-        img = cv2.addWeighted(img, 1, rgb_mask, 1, 0)
-        # cv2.rectangle(img, boxes[i][0], boxes[i][1],color=(0, 255, 0), thickness=rect_th)
-        cv2.putText(img, pred_cls[i], boxes[i][0], cv2.FONT_ITALIC, text_size, (255, 0, 0), thickness=text_th)
-
-    plt.figure(figsize=(20, 30))
-    plt.imshow(img)
-    plt.xticks([])
-    plt.yticks([])
-    plt.savefig(output_img, bbox_inches='tight', pad_inches=0, transparent = True)
-    #plt.show()
-    return output_img
-'''
 
 def instance_segmentation_api(label, img_path, threshold=0.85, rect_th=2, text_size=1, text_th=2):
     """
@@ -205,6 +194,14 @@ def instance_segmentation_api(label, img_path, threshold=0.85, rect_th=2, text_s
     plt.yticks([])
     plt.savefig(output_img, bbox_inches='tight', pad_inches=0, transparent=False)
     #plt.show()
+
+    #output_dict = {'masks': np.array(masks).tolist()}
+    #{'pred_boxes': boxes, 'pred_class': pred_cls}
+    #output_json = json.dumps(output_dict)
+    #'masks': np.array(masks).tolist(),
+    #with open(output_img+'.json', 'w') as outfile:
+    #    json.dump(output_dict, outfile, ensure_ascii=False)
+
     return output_img
 
 

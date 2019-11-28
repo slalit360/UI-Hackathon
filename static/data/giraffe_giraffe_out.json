@@ -1,0 +1,7 @@
+{
+    "coordinates": "[[(68.32204, 48.412354), (516.17126, 424.12927)]]",
+    "labels": [
+        "giraffe"
+    ],
+    "masks": "[array([[False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       ...,\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False]])]"
+}

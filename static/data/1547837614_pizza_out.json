@@ -1,0 +1,12 @@
+{
+    "coordinates": "[[(173.7931, 0.0), (370.87372, 114.873215)], [(161.16466, 136.87747), (338.5663, 270.0)], [(98.08343, 134.27966), (196.3931, 270.0)], [(0.0, 23.674429), (137.38115, 262.69534)], [(211.08994, 66.73222), (439.7122, 250.85416)], [(23.632874, 0.0), (171.97011, 130.994)]]",
+    "labels": [
+        "pizza",
+        "pizza",
+        "pizza",
+        "pizza",
+        "pizza",
+        "pizza"
+    ],
+    "masks": "[array([[False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       ...,\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False]]), array([[False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       ...,\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False]]), array([[False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       ...,\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False]]), array([[False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       ...,\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False]]), array([[False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       ...,\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False]]), array([[False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       ...,\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False]])]"
+}
