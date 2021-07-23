@@ -1,9 +1,0 @@
-{
-    "coordinates": "[[(417.54514, 296.1193), (1364.8782, 887.0985)], 
-					[(1214.7943, 191.49576), (1600.0, 484.55695)]]",
-    "labels": [
-        "car",
-        "car"
-    ],
-    "masks": "[array([[False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       ...,\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False]]), array([[False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       ...,\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False],\n       [False, False, False, ..., False, False, False]])]"
-}
