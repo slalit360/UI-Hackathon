@@ -1,0 +1,6 @@
+flask
+gunicorn
+torchvision
+werkzeug
+opencv-python
+matplotlib
