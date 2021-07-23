@@ -1,6 +1,6 @@
 flask
 gunicorn
-torchvision
+#torchvision
 werkzeug
 opencv-python
 matplotlib
