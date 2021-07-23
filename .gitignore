@@ -1,2 +1,4 @@
-venv
-requirements.txt
+venv/
+__pycache__/
+static/data/
+
